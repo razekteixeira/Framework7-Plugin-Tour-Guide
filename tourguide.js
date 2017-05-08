@@ -27,11 +27,11 @@ Framework7.prototype.plugins.tourguide = function (app) {
     // Private properties
     var self = this,
             defaults = {
+               previousButton: false, 
                nextButtonText: 'Next', 
                previousButtonText: 'Previous', 
                template: defaultTourGuideTemplate, 
-               customCSS: 'tour-guide-popover', 
-               previousButton: true
+               customCSS: 'tour-guide-popover'
             }, 
             template, 
             options = options || {}, 
@@ -52,11 +52,11 @@ Framework7.prototype.plugins.tourguide = function (app) {
                                                         '<div class="row tour-guide-buttons-row">' + 
                                                             '{{#if options.previousButton}}' + 
                                                                 '<div class="col-50">' + 
-                                                                    '<a href="#" class="button button-big tour-guide-previous-button" {{#unless options.enablePreviousButton}}disabled="disabled"{{/unless}}>{{options.previousButtonText}}</a>' + 
+                                                                    '<a href="#" class="button tour-guide-button tour-guide-previous-button" {{#unless options.enablePreviousButton}}disabled="disabled"{{/unless}}>{{options.previousButtonText}}</a>' + 
                                                                 '</div>' + 
                                                             '{{/if}}' +
                                                             '<div class="col-{{#if options.previousButton}}50{{else}}100{{/if}}">' + 
-                                                              '<a href="#" class="button button-big button-red tour-guide-next-button">{{options.nextButtonText}}</a>' + 
+                                                              '<a href="#" class="button tour-guide-button tour-guide-next-button">{{options.nextButtonText}}</a>' + 
                                                             '</div>' +  
                                                         '</div> ' + 
                                                     '</div>' + 
