@@ -91,7 +91,7 @@ Available options (if not set, default will be used)
 
 ## API
 
-The following methods are available on a welcomescreen instance
+The following methods are available on a tourguide instance
 
 ```javascript
 tourguide.moveForward();         // moves to next step
