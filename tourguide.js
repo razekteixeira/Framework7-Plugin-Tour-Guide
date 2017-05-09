@@ -29,6 +29,7 @@ Framework7.prototype.plugins.tourguide = function (app) {
             defaults = {
                previousButton: false, 
                nextButtonText: 'Next', 
+               endTourButtonText: 'Done', 
                previousButtonText: 'Previous', 
                template: defaultTourGuideTemplate, 
                customCSS: 'tour-guide-popover'
@@ -56,7 +57,7 @@ Framework7.prototype.plugins.tourguide = function (app) {
                                                                 '</div>' + 
                                                             '{{/if}}' +
                                                             '<div class="col-{{#if options.previousButton}}50{{else}}100{{/if}}">' + 
-                                                              '<a href="#" class="button tour-guide-button tour-guide-next-button">{{options.nextButtonText}}</a>' + 
+                                                              '<a href="#" class="button tour-guide-button tour-guide-next-button">{{#if options.lastStep}}{{options.endTourButtonText}}{{else}}{{options.nextButtonText}}{{/if}}</a>' + 
                                                             '</div>' +  
                                                         '</div> ' + 
                                                     '</div>' + 
@@ -72,9 +73,15 @@ Framework7.prototype.plugins.tourguide = function (app) {
           e.preventDefault();
           e.stopImmediatePropagation();
           e.stopPropagation();
-          console.log('next step');
           
             currentStep++;
+            
+            if (tourSteps.length === currentStep) {
+              console.log('No more steps');
+            }
+            else {
+                console.log('Next step');
+            }
             
             self.showTour(tourSteps, currentStep);
         });
@@ -107,8 +114,10 @@ Framework7.prototype.plugins.tourguide = function (app) {
                 app.closeModal();
 
                 // terminate tour
-                if (currentStep === (tourSteps.length - 1)) {
-                    if (typeof tourSteps[currentStep].action !== "undefined" && 
+                if (currentStep === (tourSteps.length)) {
+                    if (typeof tourSteps[currentStep] !== 'undefined' && 
+                        tourSteps[currentStep] !== null && 
+                        typeof tourSteps[currentStep].action !== "undefined" && 
                         tourSteps[currentStep].action !== null && 
                         typeof tourSteps[currentStep].action === "function") {
                         tourSteps[currentStep].action();
@@ -170,8 +179,6 @@ Framework7.prototype.plugins.tourguide = function (app) {
         for (var step in tourSteps) {
             var context = {};
             
-            context.options = options;
-            
             if (tourSteps[step].header) {
                 context.header = tourSteps[step].header;
             }
@@ -184,6 +191,13 @@ Framework7.prototype.plugins.tourguide = function (app) {
                     step > 0) {
                 options.enablePreviousButton = true;
             }
+            
+            if (+step === tourSteps.length-1)
+            {
+                options.lastStep = true;
+            }
+            
+            context.options = options;
             
             try {
                 tourSteps[step].html = template(context);
