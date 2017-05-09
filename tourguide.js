@@ -101,6 +101,46 @@ Framework7.prototype.plugins.tourguide = function (app) {
         });
     };
     
+    self.moveFoward = function ()
+    {
+        if (+currentStep === tourSteps.length)
+        {
+            console.log('Last step, cannot move forward.');
+            return;
+        }
+        
+        currentStep++;
+            
+        if (tourSteps.length === currentStep) {
+          console.log('No more steps');
+        }
+        else {
+            console.log('Next step');
+        }
+
+        self.showTour(tourSteps, currentStep);
+    };
+    
+    self.moveBackward = function ()
+    {
+        if (+currentStep === 0)
+        {
+            console.log('First step, cannot move backwards.');
+            return;
+        }
+        
+        currentStep--;
+            
+        if (tourSteps.length === currentStep) {
+          console.log('No more steps');
+        }
+        else {
+            console.log('Next step');
+        }
+
+        self.showTour(tourSteps, currentStep);
+    };
+    
     /**
      * Shows the tour guide
      *
