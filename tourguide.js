@@ -133,8 +133,16 @@ Framework7.prototype.plugins.tourguide = function (app) {
                         typeof tourSteps[currentStep].action === "function") {
                     tourSteps[currentStep].action();
                 }
-
-                app.popover(tourSteps[currentStep].html, tourSteps[currentStep].element);
+                
+                /*
+                 * popover arguments:
+                 *  - tourStep html
+                 *  - tourStep element
+                 *  - removeOnClose
+                 *  - animated
+                 *  - closeByOutside
+                 */
+                app.popover(tourSteps[currentStep].html, tourSteps[currentStep].element, true, true, false);
             }
             catch (framework7NotReadyException) {
                 console.log("Framework7 is not ready yet");

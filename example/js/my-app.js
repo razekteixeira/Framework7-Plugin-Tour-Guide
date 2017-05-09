@@ -1,7 +1,6 @@
 var myApp = new Framework7({
     pushState: true,
-    swipePanel: 'left', 
-    popoverCloseByOutside: false
+    swipePanel: 'left'
 });
 
 $$ = Dom7;
