@@ -74,7 +74,7 @@ Parameters
 3) Initialize & options
 
 ```javascript
-var myapp = new Framework7();
+var myApp = new Framework7();
 var options = {...};
             
 var tourguide = myApp.tourguide(tourSteps, options);
