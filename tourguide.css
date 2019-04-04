@@ -1,0 +1,212 @@
+:root {
+  --tourguide-hole-width: 0px;
+  --tourguide-hole-height: 0px;
+  --tourguide-hole-top: 0px;
+  --tourguide-hole-left: 0px;
+
+  --tourguide-hole-width-increment: 10px;
+  --tourguide-hole-height-increment: 10px;
+  --tourguide-hole-top-alignment: -5px;
+  --tourguide-hole-left-alignment: -5px;
+
+  --tourguide-hole-opacity: 0.7;
+
+  --tourguide-hole-radius: 10px;
+
+  --tourguide-nav-button-width: 48px;
+  --tourguide-nav-button-height: 48px;
+  --tourguide-nav-button-margin: 16px;
+
+  --tourguide-transitions-effect: ease-out;
+  --tourguide-transitions-time: 0.5s;
+
+  --tourguide-nav-button-top-position: center;
+}
+
+/* tourguide wrapper */
+/* tourguide wrapper content */
+#tourguide-wrapper .tourguide-content {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  top: calc(var(--tourguide-hole-top) + var(--tourguide-hole-top-alignment));
+  left: calc(var(--tourguide-hole-left) + var(--tourguide-hole-left-alignment));
+  border-radius: var(--tourguide-hole-radius);
+  z-index: 13000;
+}
+
+/* tourguide wrapper visible hole */
+#tourguide-wrapper.tourguide-visible .tourguide-hole {
+  transition: all var(--tourguide-transitions-time)
+    var(--tourguide-transitions-effect);
+  box-shadow: 0 0 0 99999px rgba(0, 0, 0, var(--tourguide-hole-opacity));
+}
+
+/* tourguide wrapper hidden hole */
+#tourguide-wrapper .tourguide-hole {
+  transition: box-shadow var(--tourguide-transitions-time)
+    var(--tourguide-transitions-effect);
+  box-shadow: none;
+}
+
+/* tourguide wrapper hole*/
+#tourguide-wrapper .tourguide-hole {
+  position: absolute;
+  width: calc(
+    var(--tourguide-hole-width) + var(--tourguide-hole-width-increment)
+  );
+  height: calc(
+    var(--tourguide-hole-height) + var(--tourguide-hole-height-increment)
+  );
+  top: calc(var(--tourguide-hole-top) + var(--tourguide-hole-top-alignment));
+  left: calc(var(--tourguide-hole-left) + var(--tourguide-hole-left-alignment));
+  border-radius: var(--tourguide-hole-radius);
+  z-index: 13000;
+}
+
+/* tourguide ghost wrapper */
+#tourguide-ghost-wrapper.tourguide-visible {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  z-index: 13001;
+}
+
+/* tourguide navigation */
+/* tourguide navigation flex container */
+#tourguide-nav-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  flex-direction: row;
+}
+
+/* tourguide navigation left container */
+#tourguide-nav-container #tourguide-nav-left-container {
+  width: 50%;
+  height: 100%;
+
+  align-self: flex-start;
+
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* tourguide navigation right container */
+#tourguide-nav-container #tourguide-nav-right-container {
+  width: 50%;
+  height: 100%;
+
+  align-self: flex-end;
+
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* tourguide navigation button */
+#tourguide-nav-container .tourguide-nav-button {
+  width: var(--tourguide-nav-button-width);
+  height: var(--tourguide-nav-button-height);
+
+  margin: var(--tourguide-nav-button-margin);
+
+  align-self: var(--tourguide-nav-button-top-position);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* tourguide navigation buttons */
+#tourguide-nav-container .tourguide-nav-button i {
+  border: solid #fff;
+  border-width: 0 5px 5px 0;
+  display: inline-block;
+  padding: 5px;
+}
+
+#tourguide-nav-container .tourguide-nav-button i.right {
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+}
+
+#tourguide-nav-container .tourguide-nav-button i.left {
+  transform: rotate(135deg);
+  -webkit-transform: rotate(135deg);
+}
+
+#tourguide-nav-container .tourguide-nav-button i.up {
+  transform: rotate(-135deg);
+  -webkit-transform: rotate(-135deg);
+}
+
+#tourguide-nav-container .tourguide-nav-button i.down {
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+}
+
+/* End tour guide button */
+#tourguide-end-button {
+    position: absolute;
+    top: 85vh;
+    left: -150px;
+    margin: 30px;
+    width: 100px;
+    color: #FFF;
+    font-size: 20px;
+    border: 1px solid #FFF;
+    padding: 5px;
+    border-radius: 10px;
+    font-weight: bold;
+    text-align: center;
+    margin: 0 auto;
+    z-index: 13000;
+}
+
+#tourguide-end-button.show {
+    transition: left var(--tourguide-transitions-time)
+    var(--tourguide-transitions-effect);
+    left: calc(100vw - 180px);
+}
+
+/* current selector effect */
+.pulse {
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 0 rgba(204, 169, 44, 1);
+  animation: pulse 1.5s 5;
+}
+.pulse:hover {
+  animation: none;
+}
+
+@-webkit-keyframes pulse {
+  0% {
+    -webkit-box-shadow: 0 0 0 0 rgba(204, 169, 44, 1);
+  }
+  70% {
+    -webkit-box-shadow: 0 0 0 15px rgba(204, 169, 44, 0);
+  }
+  100% {
+    -webkit-box-shadow: 0 0 0 0 rgba(204, 169, 44, 0);
+  }
+}
+@keyframes pulse {
+  0% {
+    -moz-box-shadow: 0 0 0 0 rgba(204, 169, 44, 1);
+    box-shadow: 0 0 0 0 rgba(204, 169, 44, 0.4);
+  }
+  70% {
+    -moz-box-shadow: 0 0 0 15px rgba(204, 169, 44, 0);
+    box-shadow: 0 0 0 15px rgba(204, 169, 44, 0);
+  }
+  100% {
+    -moz-box-shadow: 0 0 0 0 rgba(204, 169, 44, 0);
+    box-shadow: 0 0 0 0 rgba(204, 169, 44, 0);
+  }
+}

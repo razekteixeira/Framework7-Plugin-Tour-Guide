@@ -1,289 +1,283 @@
-/*jslint browser: true*/
-/*global console, Framework7, alert, Dom7, Template7*/
+/* framework7.debug.js */
+window.TourGuidePlugin = {
+  name: "tourguide",
+  /* Install callback
+  It will be executed right after component is installed
+  Context of this callback points to Class where it was installed
+  */
+  install() {
+    // tourguide ghost wrapper
+    var tourGuideWrapperGhostEl = document.createElement("div");
+    tourGuideWrapperGhostEl.setAttribute("id", "tourguide-ghost-wrapper");
 
-/**
- * A plugin for Framework7 to help you with a tour guide within your app
- *
- * @module Framework7/prototype/plugins/tourguide
- * @author www.timo-ernst.net
- * @license MIT
- */
-Framework7.prototype.plugins.tourguide = function (app) {
-  'use strict';
-  // Variables in module scope
-  var $$ = Dom7,
-    t7 = Template7, 
-    defaultTourGuideTemplate, 
-    TourGuide;
-    
-  /**
-   * Represents the tour guide
-   *
-   * @class
-   * @memberof module:Framework7/prototype/plugins/tourguide
-   */
-  TourGuide = function (tourSteps, options, currentStep) {
-    
-    // Private properties
-    var self = this,
-            defaults = {
-               previousButton: false, 
-               nextButtonText: 'Next', 
-               endTourButtonText: 'Done', 
-               previousButtonText: 'Previous', 
-               template: defaultTourGuideTemplate, 
-               customCSS: 'tour-guide-popover'
-            }, 
-            template, 
-            options = options || {}, 
-            tourSteps = tourSteps || [], 
-            currentStep = currentStep || 0;
-    
-    function setDefaultTemplate () {
-        defaultTourGuideTemplate = '<div class="popover popover-step-tutorial {{#if options.customCSS}}{{options.customCSS}}{{/if}}">' + 
-                                        '<div class="popover-angle"></div>' + 
-                                        '<div class="popover-inner">' + 
-                                            '<div class="tour-guide-container-wrapper">' + 
-                                                '<div class="tour-guide-header-wrapper"><p class="tour-guide-header">{{header}}</p></div>' + 
-                                                '<div class="tour-guide-message-wrapper"><p class="tour-guide-message">{{message}}</p></div>' + 
-                                            '</div>' + 
-                                            '<div class="tour-guide-toolbar-wrapper">' + 
-                                                '<div class="toolbar">' + 
-                                                    '<div class="toolbar-inner">' + 
-                                                        '<div class="row tour-guide-buttons-row">' + 
-                                                            '{{#if options.previousButton}}' + 
-                                                                '<div class="col-50">' + 
-                                                                    '<a href="#" class="button tour-guide-button tour-guide-previous-button" {{#unless options.enablePreviousButton}}disabled="disabled"{{/unless}}>{{options.previousButtonText}}</a>' + 
-                                                                '</div>' + 
-                                                            '{{/if}}' +
-                                                            '<div class="col-{{#if options.previousButton}}50{{else}}100{{/if}}">' + 
-                                                              '<a href="#" class="button tour-guide-button tour-guide-next-button">{{#if options.lastStep}}{{options.endTourButtonText}}{{else}}{{options.nextButtonText}}{{/if}}</a>' + 
-                                                            '</div>' +  
-                                                        '</div> ' + 
-                                                    '</div>' + 
-                                                '</div>' + 
-                                            '</div>' + 
-                                        '</div>' + 
-                                    '</div>';
-    };
-    
-    self.setMoveForwardAction = function () {
-        // Click handler to move forward on tour
-        $$(document).on('click', '.tour-guide-next-button', function (e) {
-          e.preventDefault();
-          e.stopImmediatePropagation();
-          e.stopPropagation();
-          
-            currentStep++;
-            
-            if (tourSteps.length === currentStep) {
-              console.log('No more steps');
-            }
-            else {
-                console.log('Next step');
-            }
-            
-            self.showTour(tourSteps, currentStep);
-        });
-    };
-    
-    self.setMoveBackwardAction = function () {
-        // Click handler to move forward on tour
-        $$(document).on('click', '.tour-guide-previous-button', function (e) {
-          e.preventDefault();
-          e.stopImmediatePropagation();
-          e.stopPropagation();
-          console.log('previous step');
-          
-            currentStep--;
-            
-            self.showTour(tourSteps, currentStep);
-        });
-    };
-    
-    self.moveFoward = function ()
-    {
-        if (+currentStep === tourSteps.length)
-        {
-            console.log('Last step, cannot move forward.');
-            return;
-        }
-        
-        currentStep++;
-            
-        if (tourSteps.length === currentStep) {
-          console.log('No more steps');
-        }
-        else {
-            console.log('Next step');
-        }
+    // tourguide navigation
+    // tourguide navigation container
+    var tourGuideNavContainerEl = document.createElement("div");
+    tourGuideNavContainerEl.setAttribute("id", "tourguide-nav-container");
 
-        self.showTour(tourSteps, currentStep);
-    };
-    
-    self.moveBackward = function ()
-    {
-        if (+currentStep === 0)
-        {
-            console.log('First step, cannot move backwards.');
-            return;
+    // tourguide navigation left and right containers
+    var tourGuideNavLeftContainerEl = document.createElement("div");
+    tourGuideNavLeftContainerEl.setAttribute(
+      "id",
+      "tourguide-nav-left-container"
+    );
+    var tourGuideNavRightContainerEl = document.createElement("div");
+    tourGuideNavRightContainerEl.setAttribute(
+      "id",
+      "tourguide-nav-right-container"
+    );
+
+    // tourguide navigation buttons
+    var tourGuideNavLeftButtonEl = document.createElement("div");
+    tourGuideNavLeftButtonEl.setAttribute(
+      "class",
+      "tourguide-nav-button tourguide-nav-button-left"
+    );
+    var tourGuideNavRightButtonEl = document.createElement("div");
+    tourGuideNavRightButtonEl.setAttribute(
+      "class",
+      "tourguide-nav-button tourguide-nav-button-right"
+    );
+
+    // navigation button icon
+    var tourGuideNavButtonIconEl = document.createElement("i");
+    tourGuideNavButtonIconEl.setAttribute("class", "tourguide-nav-button-icon");
+
+    console.log("asdasdasd");
+    // append icons to navigation buttons
+    var leftButton = tourGuideNavButtonIconEl.cloneNode(true);
+    var rightButton = tourGuideNavButtonIconEl.cloneNode(true);
+    leftButton.classList.add("left");
+    rightButton.classList.add("right");
+    tourGuideNavLeftButtonEl.appendChild(leftButton);
+    tourGuideNavRightButtonEl.appendChild(rightButton);
+
+    // append navigation buttons to navigation containers
+    tourGuideNavLeftContainerEl.appendChild(tourGuideNavLeftButtonEl);
+    tourGuideNavRightContainerEl.appendChild(tourGuideNavRightButtonEl);
+
+    // append nav left and right containers to nav container
+    tourGuideNavContainerEl.appendChild(tourGuideNavLeftContainerEl);
+    tourGuideNavContainerEl.appendChild(tourGuideNavRightContainerEl);
+
+    // append tourguide nav container to ghost wrapper
+    tourGuideWrapperGhostEl.appendChild(tourGuideNavContainerEl);
+
+    // tour guide end button
+    var tourGuideEndButtonEl = document.createElement("div");
+    tourGuideEndButtonEl.setAttribute("id", "tourguide-end-button");
+    tourGuideEndButtonEl.innerText = "Começar :)";
+
+    // append tourguide end button to ghost wrapper
+    tourGuideWrapperGhostEl.appendChild(tourGuideEndButtonEl);
+
+    // tour guide wrapper
+    var tourGuideWrapperEl = document.createElement("div");
+    tourGuideWrapperEl.setAttribute("id", "tourguide-wrapper");
+
+    // tour guide hole
+    var tourGuideHoleEl = document.createElement("div");
+    tourGuideHoleEl.setAttribute("class", "tourguide-hole");
+
+    // append hole to tourguide wrapper
+    tourGuideWrapperEl.appendChild(tourGuideHoleEl);
+
+    // append both tourguide wrapper and ghost wrapper to body
+    document.body.appendChild(tourGuideWrapperGhostEl);
+    document.body.appendChild(tourGuideWrapperEl);
+  },
+  // extend app params with tourguide params
+  params: {
+    navigation: {
+      position: "middle"
+    },
+    tourGuideSteps: {
+      1: {
+        id: 1,
+        selector: "#view-home > div > div.navbar > div > div.left > a > i",
+        title: "Left sidebar",
+        subtitle: "You may check all features in this app",
+        image:
+          "https://www.patternfly.org/pattern-library/navigation/vertical-navigation/img/navigation-vertical-responsive3.png",
+        action: function() {
+          console.log("OH MY FUCKING GOD!");
         }
-        
-        currentStep--;
-            
-        if (tourSteps.length === currentStep) {
-          console.log('No more steps');
+      },
+      2: {
+        id: 2,
+        selector:
+          "#view-home > div > div.page-content > div.my-orders-row.row > div > a > div",
+        title: "My Orders",
+        subtitle: "You may check all of your orders",
+        image:
+          "https://www.patternfly.org/pattern-library/navigation/vertical-navigation/img/navigation-vertical-responsive3.png",
+        action: function() {
+          console.log("OH MY FUCKING GOD!");
         }
-        else {
-            console.log('Next step');
-        }
-
-        self.showTour(tourSteps, currentStep);
-    };
-    
-    /**
-     * Shows the tour guide
-     *
-     * @public
-     * @memberof module:Framework7/prototype/plugins/tourguide
-     */
-    self.showTour = function () {
-        setTimeout(function () {
-            try {
-                // close previous modal if exists
-                app.closeModal();
-
-                // terminate tour
-                if (currentStep === (tourSteps.length)) {
-                    if (typeof tourSteps[currentStep] !== 'undefined' && 
-                        tourSteps[currentStep] !== null && 
-                        typeof tourSteps[currentStep].action !== "undefined" && 
-                        tourSteps[currentStep].action !== null && 
-                        typeof tourSteps[currentStep].action === "function") {
-                        tourSteps[currentStep].action();
-                    }
-                    
-                    currentStep = 0;
-
-                    return;
-                }
-
-                if (typeof tourSteps[currentStep].action !== "undefined" && 
-                        tourSteps[currentStep].action !== null && 
-                        typeof tourSteps[currentStep].action === "function") {
-                    tourSteps[currentStep].action();
-                }
-                
-                /*
-                 * popover arguments:
-                 *  - tourStep html
-                 *  - tourStep element
-                 *  - removeOnClose
-                 *  - animated
-                 *  - closeByOutside
-                 */
-                app.popover(tourSteps[currentStep].html, tourSteps[currentStep].element, true, true, false);
-            }
-            catch (framework7NotReadyException) {
-                console.log("Framework7 is not ready yet");
-                console.log(framework7NotReadyException);
-            }
-        }, 100);
-    };
-    
-    /**
-     * Sets the options that were required
-     *
-     * @private
-     */
-    function applyOptions() {
-      var def;
-      options = options || {};
-      for (def in defaults) {
-        if (typeof options[def] === 'undefined') {
-          options[def] = defaults[def];
+      },
+      3: {
+        id: 2,
+        selector:
+          "#framework7-root > div.safe-areas.views.tabs > div.toolbar.tabbar.toolbar-bottom.tabbar-labels > div > a:nth-child(2)",
+        title: "Stores Nearby",
+        subtitle: "You may check all stores near you",
+        image:
+          "https://www.patternfly.org/pattern-library/navigation/vertical-navigation/img/navigation-vertical-responsive3.png",
+        action: function() {
+          document.getElementById("tourguide-end-button").classList.add("show");
         }
       }
-    }
-    
-    /**
-     * Compiles the template
-     *
-     * @private
-     */
-    function compileTemplate() {
-      if (!options.template) {
-        // Cache compiled templates
-        if (!app._compiledTemplates.tourguide) {
-          app._compiledTemplates.tourguide = t7.compile(defaultTourGuideTemplate);
-        }
-        template = app._compiledTemplates.tourguide;
-      } else {
-        template = t7.compile(options.template);
-      }
-    }
-    
-    self.prepareSteps = function () {
-        for (var step in tourSteps) {
-            var context = {};
-            
-            if (tourSteps[step].header) {
-                context.header = tourSteps[step].header;
-            }
-            
-            if (tourSteps[step].message) {
-                context.message = tourSteps[step].message;
-            }
-            
-            if (options.previousButton && 
-                    step > 0) {
-                options.enablePreviousButton = true;
-            }
-            
-            if (+step === tourSteps.length-1)
-            {
-                options.lastStep = true;
-            }
-            
-            context.options = options;
-            
-            try {
-                tourSteps[step].html = template(context);
-            }
-            catch (TemplateNotDefinedException) {
-                console.log('Failed to compile template with context');
-                console.log(TemplateNotDefinedException);
-            }
-        }
-    };
+    },
+    tourGuideCurrentStep: null
+  },
+  create: function() {
+    var app = this;
+    // extend app methods with tourguide methods when app instance just created
+    app.tourguide = {
+      start: function() {
+        app.params.tourGuideCurrentStep = 1;
+        app.prepareTourAndShow();
+      },
+      stop: function() {
+        document
+          .getElementById("tourguide-wrapper")
+          .classList.remove("tourguide-visible");
+        document
+          .getElementById("tourguide-ghost-wrapper")
+          .classList.remove("tourguide-visible");
+        document
+          .getElementById("tourguide-end-button")
+          .classList.remove("show");
 
-    /**
-     * Initialize the instance
-     *
-     * @method init
-     */
-    (function () {
-        // define default template
-        setDefaultTemplate();
-        // Compile template
-        compileTemplate();
-        // apply options
-        applyOptions();
-        // Prepare steps
-        self.prepareSteps();
-        // set move forward action
-        self.setMoveForwardAction();
-        // set move backwards action
-        self.setMoveBackwardAction();
-      
-    }());
-    
-    // Return instance
-    return self;
-  };
-  
-  app.tourguide = function (tourSteps, options, currentStep) {
-    return new TourGuide(tourSteps, options, currentStep);
-  };
-  
+        /* Remove listeners */
+        document.querySelector(
+          "#tourguide-ghost-wrapper #tourguide-nav-left-container"
+        ).onclick = null;
+        document.querySelector(
+          "#tourguide-ghost-wrapper #tourguide-nav-right-container"
+        ).onclick = null;
+        document.querySelector("#tourguide-end-button").onclick = null;
+      },
+      forward: function() {
+        console.log("Tourguide - Forward");
+        if (
+          app.params.tourGuideCurrentStep + 1 <=
+          Object.keys(app.params.tourGuideSteps).length
+        ) {
+          /* remove effect on previous selector */
+          document
+            .querySelector(
+              app.params.tourGuideSteps[app.params.tourGuideCurrentStep]
+                .selector
+            )
+            .classList.remove("pulse");
+
+          app.params.tourGuideCurrentStep += 1;
+          app.prepareTourAndShow();
+        }
+      },
+      backwards: function() {
+        console.log("Tourguide - Backwards");
+        if (app.params.tourGuideCurrentStep - 1 > 0) {
+          /* remove effect on previous selector */
+          document
+            .querySelector(
+              app.params.tourGuideSteps[app.params.tourGuideCurrentStep]
+                .selector
+            )
+            .classList.remove("pulse");
+
+          app.params.tourGuideCurrentStep -= 1;
+          app.prepareTourAndShow();
+        }
+      }
+    };
+  },
+  /* Initialized instance Props & Methods */
+  instance: {
+    prepareTourAndShow() {
+      var app = this;
+
+      let elWidth = document
+        .querySelector(
+          app.params.tourGuideSteps[app.params.tourGuideCurrentStep].selector
+        )
+        .getBoundingClientRect().width;
+      let elHeight = document
+        .querySelector(
+          app.params.tourGuideSteps[app.params.tourGuideCurrentStep].selector
+        )
+        .getBoundingClientRect().height;
+      let elTop = document
+        .querySelector(
+          app.params.tourGuideSteps[app.params.tourGuideCurrentStep].selector
+        )
+        .getBoundingClientRect().top;
+      let elLeft = document
+        .querySelector(
+          app.params.tourGuideSteps[app.params.tourGuideCurrentStep].selector
+        )
+        .getBoundingClientRect().left;
+
+      let root = document.documentElement;
+
+      root.style.setProperty("--tourguide-hole-width", elWidth + "px");
+      root.style.setProperty("--tourguide-hole-height", elHeight + "px");
+      root.style.setProperty("--tourguide-hole-top", elTop + "px");
+      root.style.setProperty("--tourguide-hole-left", elLeft + "px");
+
+      /* position navigation */
+      if (app.params.navigation.position === "top")
+        root.style.setProperty(
+          "--tourguide-nav-button-top-position",
+          "flex-start"
+        );
+      if (app.params.navigation.position === "middle")
+        root.style.setProperty("--tourguide-nav-button-top-position", "center");
+      if (app.params.navigation.position === "bottom")
+        root.style.setProperty(
+          "--tourguide-nav-button-top-position",
+          "flex-end"
+        );
+
+      document
+        .getElementById("tourguide-wrapper")
+        .classList.add("tourguide-visible");
+      document
+        .getElementById("tourguide-ghost-wrapper")
+        .classList.add("tourguide-visible");
+
+      if (
+        typeof app.params.tourGuideSteps[app.params.tourGuideCurrentStep]
+          .action === "function"
+      ) {
+        try {
+          app.params.tourGuideSteps[app.params.tourGuideCurrentStep].action();
+        } catch (exception) {
+          console.log(
+            `Tourguide Exception - Failed to execute action in current step: ${
+              app.params.tourGuideCurrentStep
+            }`
+          );
+        }
+      }
+
+      /* effect on current selector */
+      document
+        .querySelector(
+          app.params.tourGuideSteps[app.params.tourGuideCurrentStep].selector
+        )
+        .classList.add("pulse");
+
+      /* Listeners */
+      document.querySelector(
+        "#tourguide-ghost-wrapper #tourguide-nav-left-container"
+      ).onclick = app.tourguide.backwards;
+      document.querySelector(
+        "#tourguide-ghost-wrapper #tourguide-nav-right-container"
+      ).onclick = app.tourguide.forward;
+      document.querySelector("#tourguide-end-button").onclick =
+        app.tourguide.stop;
+    }
+  }
 };
