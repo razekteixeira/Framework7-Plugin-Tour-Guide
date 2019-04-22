@@ -43,7 +43,6 @@ window.TourGuidePlugin = {
     var tourGuideNavButtonIconEl = document.createElement("i");
     tourGuideNavButtonIconEl.setAttribute("class", "tourguide-nav-button-icon");
 
-    console.log("asdasdasd");
     // append icons to navigation buttons
     var leftButton = tourGuideNavButtonIconEl.cloneNode(true);
     var rightButton = tourGuideNavButtonIconEl.cloneNode(true);
@@ -66,7 +65,7 @@ window.TourGuidePlugin = {
     // tour guide end button
     var tourGuideEndButtonEl = document.createElement("div");
     tourGuideEndButtonEl.setAttribute("id", "tourguide-end-button");
-    tourGuideEndButtonEl.innerText = "Começar :)";
+    tourGuideEndButtonEl.innerText = "Let's go!";
 
     // append tourguide end button to ghost wrapper
     tourGuideWrapperGhostEl.appendChild(tourGuideEndButtonEl);
@@ -88,46 +87,52 @@ window.TourGuidePlugin = {
   },
   // extend app params with tourguide params
   params: {
+    dynamicPopover: null,
     navigation: {
-      position: "middle"
+      enabled: false,
+      position: "top"
     },
-    tourGuideSteps: {
-      1: {
+    tourGuideSteps: [
+      {
         id: 1,
-        selector: "#view-home > div > div.navbar > div > div.left > a > i",
+        selector: "#app .tourguide-left-panel-el > i",
         title: "Left sidebar",
         subtitle: "You may check all features in this app",
         image:
           "https://www.patternfly.org/pattern-library/navigation/vertical-navigation/img/navigation-vertical-responsive3.png",
         action: function() {
-          console.log("OH MY FUCKING GOD!");
+          console.log(`Step: ${this.id}`);
         }
       },
-      2: {
+      {
         id: 2,
         selector:
-          "#view-home > div > div.page-content > div.my-orders-row.row > div > a > div",
+          "#app > div.view.view-main.safe-areas > div.page.page-current > div.page-content > div:nth-child(3) > ul > li:nth-child(1) > a",
         title: "My Orders",
         subtitle: "You may check all of your orders",
         image:
           "https://www.patternfly.org/pattern-library/navigation/vertical-navigation/img/navigation-vertical-responsive3.png",
         action: function() {
-          console.log("OH MY FUCKING GOD!");
+          console.log(`Step: ${this.id}`);
         }
       },
-      3: {
-        id: 2,
+      {
+        id: 3,
         selector:
-          "#framework7-root > div.safe-areas.views.tabs > div.toolbar.tabbar.toolbar-bottom.tabbar-labels > div > a:nth-child(2)",
+          "#app > div.view.view-main.safe-areas > div.page.page-current > div.page-content > div:nth-child(7) > div > div:nth-child(2) > a",
         title: "Stores Nearby",
         subtitle: "You may check all stores near you",
         image:
           "https://www.patternfly.org/pattern-library/navigation/vertical-navigation/img/navigation-vertical-responsive3.png",
         action: function() {
+          console.log(`Step: ${this.id}`);
           document.getElementById("tourguide-end-button").classList.add("show");
+        },
+        popover: {
+          position: "top"
         }
       }
-    },
+    ],
     tourGuideCurrentStep: null
   },
   create: function() {
@@ -135,7 +140,7 @@ window.TourGuidePlugin = {
     // extend app methods with tourguide methods when app instance just created
     app.tourguide = {
       start: function() {
-        app.params.tourGuideCurrentStep = 1;
+        app.params.tourGuideCurrentStep = 0;
         app.prepareTourAndShow();
       },
       stop: function() {
@@ -161,32 +166,16 @@ window.TourGuidePlugin = {
       forward: function() {
         console.log("Tourguide - Forward");
         if (
-          app.params.tourGuideCurrentStep + 1 <=
-          Object.keys(app.params.tourGuideSteps).length
+          app.params.tourGuideCurrentStep + 1 <
+          app.params.tourGuideSteps.length
         ) {
-          /* remove effect on previous selector */
-          document
-            .querySelector(
-              app.params.tourGuideSteps[app.params.tourGuideCurrentStep]
-                .selector
-            )
-            .classList.remove("pulse");
-
           app.params.tourGuideCurrentStep += 1;
           app.prepareTourAndShow();
         }
       },
       backwards: function() {
         console.log("Tourguide - Backwards");
-        if (app.params.tourGuideCurrentStep - 1 > 0) {
-          /* remove effect on previous selector */
-          document
-            .querySelector(
-              app.params.tourGuideSteps[app.params.tourGuideCurrentStep]
-                .selector
-            )
-            .classList.remove("pulse");
-
+        if (app.params.tourGuideCurrentStep - 1 >= 0) {
           app.params.tourGuideCurrentStep -= 1;
           app.prepareTourAndShow();
         }
@@ -197,6 +186,12 @@ window.TourGuidePlugin = {
   instance: {
     prepareTourAndShow() {
       var app = this;
+
+      // clean up popovers
+      if (app.params.dynamicPopover) {
+        app.params.dynamicPopover.close(false);
+        app.params.dynamicPopover.destroy();
+      }
 
       let elWidth = document
         .querySelector(
@@ -226,19 +221,70 @@ window.TourGuidePlugin = {
       root.style.setProperty("--tourguide-hole-top", elTop + "px");
       root.style.setProperty("--tourguide-hole-left", elLeft + "px");
 
+      /* message top position */
+      if (app.params.tourGuideSteps[app.params.tourGuideCurrentStep].popover) {
+        let stepPopoverPosition =
+          app.params.tourGuideSteps[app.params.tourGuideCurrentStep].popover
+            .position;
+        let popoverPosition = 0;
+
+        switch (stepPopoverPosition) {
+          case "top":
+            popoverPosition = "20%";
+            break;
+          case "middle":
+            popoverPosition = "50%";
+            break;
+          case "bottom":
+            popoverPosition = "80%";
+            break;
+          default:
+            // center
+            popoverPosition = "50%";
+            break;
+        }
+
+        root.style.setProperty("--tourguide-popover-top", popoverPosition);
+      } else {
+        // defaults to middle
+        root.style.setProperty("--tourguide-popover-top", "50%");
+      }
+
       /* position navigation */
-      if (app.params.navigation.position === "top")
-        root.style.setProperty(
-          "--tourguide-nav-button-top-position",
-          "flex-start"
-        );
-      if (app.params.navigation.position === "middle")
+      if (app.params.navigation.enabled) {
+        root.style.setProperty("--tourguide-nav-button-visibility", "visible");
+
+        if (
+          app.params.tourGuideSteps[app.params.tourGuideCurrentStep].navigation
+        ) {
+          if (
+            app.params.tourGuideSteps[app.params.tourGuideCurrentStep]
+              .navigation.position === "top"
+          )
+            root.style.setProperty(
+              "--tourguide-nav-button-top-position",
+              "flex-start"
+            );
+          if (
+            app.params.tourGuideSteps[app.params.tourGuideCurrentStep]
+              .navigation.position === "middle"
+          )
+            root.style.setProperty(
+              "--tourguide-nav-button-top-position",
+              "center"
+            );
+          if (
+            app.params.tourGuideSteps[app.params.tourGuideCurrentStep]
+              .navigation.position === "bottom"
+          )
+            root.style.setProperty(
+              "--tourguide-nav-button-top-position",
+              "flex-end"
+            );
+        }
+      } else {
         root.style.setProperty("--tourguide-nav-button-top-position", "center");
-      if (app.params.navigation.position === "bottom")
-        root.style.setProperty(
-          "--tourguide-nav-button-top-position",
-          "flex-end"
-        );
+      }
 
       document
         .getElementById("tourguide-wrapper")
@@ -262,13 +308,6 @@ window.TourGuidePlugin = {
         }
       }
 
-      /* effect on current selector */
-      document
-        .querySelector(
-          app.params.tourGuideSteps[app.params.tourGuideCurrentStep].selector
-        )
-        .classList.add("pulse");
-
       /* Listeners */
       document.querySelector(
         "#tourguide-ghost-wrapper #tourguide-nav-left-container"
@@ -278,6 +317,47 @@ window.TourGuidePlugin = {
       ).onclick = app.tourguide.forward;
       document.querySelector("#tourguide-end-button").onclick =
         app.tourguide.stop;
+
+      setTimeout(function() {
+        // Create dynamic Popover
+        app.params.dynamicPopover = app.popover
+          .create({
+            backdrop: false,
+            closeByBackdropClick: false,
+            closeByOutsideClick: false,
+            closeOnEscape: false,
+            targetEl:
+              app.params.tourGuideSteps[app.params.tourGuideCurrentStep]
+                .selector,
+            content:
+              '<div class="popover tourguide-popover">' +
+              '<div class="popover-inner">' +
+              '<div class="block tourguide-step-container">' +
+              "<img src='" +
+              app.params.tourGuideSteps[app.params.tourGuideCurrentStep].image +
+              "' class='tourguide-step-image' />" +
+              "<p class='tourguide-step-title'>" +
+              app.params.tourGuideSteps[app.params.tourGuideCurrentStep].title +
+              "</p>" +
+              "<p class='tourguide-step-subtitle'>" +
+              app.params.tourGuideSteps[app.params.tourGuideCurrentStep]
+                .subtitle +
+              "</p>" +
+              "</div>" +
+              "</div>" +
+              "</div>",
+            // Events
+            on: {
+              open: function(popover) {
+                console.log("Popover open");
+              },
+              opened: function(popover) {
+                console.log("Popover opened");
+              }
+            }
+          })
+          .open();
+      }, 250);
     }
   }
 };
