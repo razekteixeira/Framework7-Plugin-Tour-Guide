@@ -89,7 +89,7 @@ window.TourGuidePlugin = {
   params: {
     dynamicPopover: null,
     navigation: {
-      enabled: false,
+      enabled: true,
       position: "top"
     },
     tourGuideSteps: [
@@ -99,7 +99,7 @@ window.TourGuidePlugin = {
         title: "Left sidebar",
         subtitle: "You may check all features in this app",
         image:
-          "https://www.patternfly.org/pattern-library/navigation/vertical-navigation/img/navigation-vertical-responsive3.png",
+          "https://screentimelabs.com/wp-content/uploads/2018/03/ScreenTime-Best-Parental-Control-App-726x500.png",
         action: function() {
           console.log(`Step: ${this.id}`);
         }
@@ -111,7 +111,7 @@ window.TourGuidePlugin = {
         title: "My Orders",
         subtitle: "You may check all of your orders",
         image:
-          "https://www.patternfly.org/pattern-library/navigation/vertical-navigation/img/navigation-vertical-responsive3.png",
+          "https://screentimelabs.com/wp-content/uploads/2018/03/ScreenTime-Best-Parental-Control-App-726x500.png",
         action: function() {
           console.log(`Step: ${this.id}`);
         }
@@ -123,7 +123,7 @@ window.TourGuidePlugin = {
         title: "Stores Nearby",
         subtitle: "You may check all stores near you",
         image:
-          "https://www.patternfly.org/pattern-library/navigation/vertical-navigation/img/navigation-vertical-responsive3.png",
+          "https://screentimelabs.com/wp-content/uploads/2018/03/ScreenTime-Best-Parental-Control-App-726x500.png",
         action: function() {
           console.log(`Step: ${this.id}`);
           document.getElementById("tourguide-end-button").classList.add("show");
@@ -162,6 +162,12 @@ window.TourGuidePlugin = {
           "#tourguide-ghost-wrapper #tourguide-nav-right-container"
         ).onclick = null;
         document.querySelector("#tourguide-end-button").onclick = null;
+
+        // clean up popovers
+        if (app.params.dynamicPopover) {
+          app.params.dynamicPopover.close(false);
+          app.params.dynamicPopover.destroy();
+        }
       },
       forward: function() {
         console.log("Tourguide - Forward");
