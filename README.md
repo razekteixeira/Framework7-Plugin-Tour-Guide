@@ -100,6 +100,6 @@ tourguide.moveBackward();        // moves to previous step if allowed
 
 ## Credits
 
-Developed by www.cesarteixeira.pt
+Developed by https://www.cesarteixeira.pt
 
 Please contribute ;)
